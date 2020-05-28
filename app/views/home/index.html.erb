@@ -1,6 +1,15 @@
 <!-- Home#index -->
 <h3>Current User: <%= current_user.email %></h3>
 
+<h2>Look for a Friend</h2>
+<div class="search">
+<%= form_tag(home_index_path, method: :get, class: "form-inline my-2 my-lg-0") do %>
+    Search By User Email <%= text_field_tag :search, params[:search], class: "form-inline my-2 my-lg-0 ml-2" %>
+    <%= submit_tag 'Search 🔍', name: nil, class: "btn btn-outline-success btn-sm form-inline my-2 my-sm-0 ml-2" %>
+<% end %>
+</div> 
+
+
 <h2>List of All Possible Friends</h2>
 <p>Add or Remove a Friend</p>
 <ul>
