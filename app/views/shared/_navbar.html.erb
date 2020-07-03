@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="background-color: #e3f2fd;">
+  <%#= image_tag ("apple_logo_md.gif") %>
+  <a class="navbar-brand" href="/">Friendship App</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <!-- Login Items -->
+      <li class="nav-item">
+        <% if current_user.is_a?(User) %>
+          <%= link_to "Log Out", destroy_user_session_path, class: "nav-link" %>
+        <% else %>
+          <%= link_to "Log In", new_user_session_path, class: "nav-link" %>
+        <% end %>
+      </li>
+
+    </ul>
+    <!-- Display name of current_user -->
+  <% if user_signed_in? %>
+    <span class="navbar-text">
+      Welcome, <%= current_user.email %>
+    </span>
+  <% end %>
+  </div>
+</nav>

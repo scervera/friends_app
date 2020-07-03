@@ -65,3 +65,10 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # My custom gem additions
 gem 'devise'
+gem 'jquery-ui-rails'
+# Bootstrap https://github.com/twbs/bootstrap-rubygem
+gem 'bootstrap', '~> 4.4.1'
+# Fontawesome Toolkit  https://github.com/bokmann/font-awesome-rails
+gem "font-awesome-rails"
+gem 'jquery-rails'
+gem 'awesome_print'

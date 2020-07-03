@@ -9,4 +9,6 @@ class User < ApplicationRecord
 
   scope :all_except, ->(user) { where.not(id: user) }
   scope :all_friends_except, ->(user) { where('id NOT IN (SELECT DISTINCT(friend_id) FROM friendships)') }
+  scope :all_friendships_requested, ->(user) { where('id IN (SELECT DISTINCT(friend_id) FROM friendships)') }
+  
 end

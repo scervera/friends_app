@@ -9,19 +9,54 @@
 <% end %>
 </div> 
 
-
-<h2>List of All Possible Friends</h2>
-<p>Add or Remove a Friend</p>
+<p>Add a Friend</p>
 <ul>
-	<% @users.each do |user| %>
+	<% @possible_friends.each do |user| %>
       <li><%= user.email %><%= link_to "Add Friend", friendships_path(:friend_id => user), :method => :create %></li>
 	<% end %>
 </ul>
 
-
-<h2>List of My Friends</h2>
+<!-- List of friend requests sent by current_user -->
+<h2>Friend Requests Sent</h2>
 <ul>
-	<% @friendships.each do |friendship| %>
-      <li><%= friendship.friend.email %> <%= link_to "Destroy", friendship_path(friendship), :method => :delete %> </li>
+	<% @friendships.all_friendships_pending.each do |friendship| %>
+      <li><%= friendship.friend.email %>  <%= link_to "Pending", "#", class: "btn btn-warning btn-sm"%>  <%= link_to "Cancel", friendship_path(friendship), class: "btn btn-sm btn-danger", :method => :delete %> </li>
 	<% end %>
 </ul>
+
+<!-- List of friend requests received -->
+<h2>Friend Requests Received</h2>
+<ul>
+	<% @friend_requests.each do |friendship| %>
+      <li><%= friendship.user.email %>  
+      	  <%= link_to "Pending", "#", class: "btn btn-warning btn-sm"%>
+      	  <%= form_with(model: friendship, local: true) do |form| %>
+      	    <%= form.hidden_field :friendship_confirmed, :value => true %>
+      	    <%= form.submit class: "btn btn-sm btn-success" %>  
+      	  <% end %>
+      </li>
+	<% end %>
+</ul>
+
+<!-- My attempt to create a single list of friends where current_user is the user_id OR the friend_id -->
+<h2>My Confirmed Friends </h2>
+<ul>
+<% @my_friendships.each do |friendship| %>
+  <li><%= friendship.friend.email %> <%= link_to "Un-Friend", friendship_path(friendship), class: "btn btn-sm btn-danger mb-2", :method => :delete %></li>
+<% end %>
+<!-- </ul>
+<h2>People Who Friended Me</h2>
+<ul> -->
+<% @received_friendships.each do |friendship| %>
+  <li><%= friendship.user.email %> <%= link_to "Un-Friend", friendship_path(friendship), class: "btn btn-sm btn-danger mb-2", :method => :delete %></li>
+<% end %>
+</ul>
+
+<h2>All my Friends Combined</h2> 
+<!-- Note that these are friends and inverse_friends, but not friendships -->
+<ul>
+<% @combined_friends.each do |friend| %>
+  <li><%= friend.email %></li>
+<% end %>
+</ul>
+
