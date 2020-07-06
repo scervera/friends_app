@@ -8,5 +8,6 @@ class Friendship < ApplicationRecord
   scope :all_friendships_confirmed, -> { where(friendship_confirmed: true ) }
   scope :all_friendships_pending, -> { where(friendship_confirmed: nil || false ) }
   #scope :all_friendships_requested, -> { where('id IN (SELECT DISTINCT(friend_id) FROM friendships)') }
+  scope :all_friendships, ->(user) { where('id IN (SELECT DISTINCT(friend_id == user) || (user_id == user) FROM friendships)') }
 
 end

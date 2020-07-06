@@ -1,62 +1,111 @@
 <!-- Home#index -->
-<h3>Current User: <%= current_user.email %></h3>
 
-<h2>Look for a Friend</h2>
-<div class="search">
-<%= form_tag(home_index_path, method: :get, class: "form-inline my-2 my-lg-0") do %>
-    Search By User Email <%= text_field_tag :search, params[:search], class: "form-inline my-2 my-lg-0 ml-2" %>
-    <%= submit_tag 'Search 🔍', name: nil, class: "btn btn-outline-success btn-sm form-inline my-2 my-sm-0 ml-2" %>
-<% end %>
-</div> 
-
-<p>Add a Friend</p>
-<ul>
-	<% @possible_friends.each do |user| %>
-      <li><%= user.email %><%= link_to "Add Friend", friendships_path(:friend_id => user), :method => :create %></li>
-	<% end %>
-</ul>
+<div class="row">
+  <div class="col">
+  	<div class="card text-center">
+  		<div class="card-header">
+			<h2 class="card-title">Look for a Friend</h2>
+		</div>
+		<div class="card-body">
+			<div class="search text-center">
+				<%= form_tag(home_index_path, method: :get, class: "my-2 my-lg-0") do %>
+				    Search By User Email <%= text_field_tag :search, params[:search], class: "my-2 my-lg-0 ml-2 text-center" %>
+				    <%= submit_tag 'Search 🔍', name: nil, class: "btn btn-outline-success btn-sm form-inline my-2 my-sm-0 ml-2" %>
+				<% end %>
+			</div>
+			<% if @possible_friends %>
+			  <h3 class="card-title text-center mt-3">Add a Friend</h3>
+				<ul>
+					<% @possible_friends.each do |user| %>
+				      <li class="list-unstyled"><%= user.email %>  <%= link_to "Add Friend", friendships_path(:friend_id => user), :method => :create, class: "btn btn-success btn-sm form-inline my-2 my-sm-0 ml-2" %></li>
+					<% end %>
+				</ul>
+			<% end %>
+		</div>
+	</div>
+  </div> 
+</div>
 
 <!-- List of friend requests sent by current_user -->
-<h2>Friend Requests Sent</h2>
-<ul>
-	<% @friendships.all_friendships_pending.each do |friendship| %>
-      <li><%= friendship.friend.email %>  <%= link_to "Pending", "#", class: "btn btn-warning btn-sm"%>  <%= link_to "Cancel", friendship_path(friendship), class: "btn btn-sm btn-danger", :method => :delete %> </li>
-	<% end %>
-</ul>
+<div class="row mt-4 mb-4">
+    <div class="col">
+  	    <div class="card text-center">
+	  		<div class="card-header">
+				<h2 class="card-title">Friend Requests Sent</h2>
+			</div>
+			<div class="card-body">
+				<ul>
+					<% @friendships.all_friendships_pending.each do |friendship| %>
+				      <li class="list-unstyled"><%= friendship.friend.email %>  <%= link_to "Pending", "#", class: "btn btn-warning btn-sm"%>  <%= link_to "Cancel", friendship_path(friendship), class: "btn btn-sm btn-danger", :method => :delete %> </li>
+					<% end %>
+				</ul>
+			</div>
+	    </div>
+    </div>
+</div>
+
+<!-- List of all my confirmed friendships -->
+<div class="row mt-4 mb-4">
+    <div class="col">
+  	    <div class="card text-center">
+	  		<div class="card-header">
+				<h2 class="card-title">All of My Confirmed Friendships</h2>
+			</div>
+			<div class="card-body">
+				<ul>
+					<% @all_my_friendships.each do |friendship| %>
+					  <% unless friendship.friend.email == current_user.email %>
+				        <li class="list-unstyled"><%= friendship.friend.email %> <%= link_to "Un-Friend", friendship_path(friendship), class: "btn btn-sm btn-danger mb-2", :method => :delete %> </li>
+				      <% else %>
+				        <li class="list-unstyled"><%= friendship.user.email %> <%= link_to "Un-Friend", friendship_path(friendship), class: "btn btn-sm btn-danger mb-2", :method => :delete %> </li>
+				      <% end %>
+					<% end %>
+				</ul>
+			</div>
+	    </div>
+    </div>
+</div>
+
 
 <!-- List of friend requests received -->
-<h2>Friend Requests Received</h2>
-<ul>
-	<% @friend_requests.each do |friendship| %>
-      <li><%= friendship.user.email %>  
-      	  <%= link_to "Pending", "#", class: "btn btn-warning btn-sm"%>
-      	  <%= form_with(model: friendship, local: true) do |form| %>
-      	    <%= form.hidden_field :friendship_confirmed, :value => true %>
-      	    <%= form.submit class: "btn btn-sm btn-success" %>  
-      	  <% end %>
-      </li>
-	<% end %>
-</ul>
+<div class="row mt-4 mb-4">
+    <div class="col">
+  	    <div class="card text-center">
+	  		<div class="card-header">
+				<h2 class="card-title">Friend Requests Received</h2>
+			</div>
+			<div class="card-body">
+				<ul>
+					<% @friend_requests.each do |friendship| %>
+				      <li class="list-unstyled"><%= friendship.user.email %>  
+				      	  <%= link_to "Pending", "#", class: "btn btn-warning btn-sm"%>
+				      	  <%= form_with(model: friendship, local: true, :html => { :style => 'display:inline;' }) do |form| %>
+				      	    <%= form.hidden_field :friendship_confirmed, :value => true %>
+				      	    <%= form.submit "Accept", class: "btn btn-sm btn-success" %>  
+				      	  <% end %>
+				      </li>
+					<% end %>
+				</ul>
+			</div>
+	    </div>
+    </div>
+</div>
 
-<!-- My attempt to create a single list of friends where current_user is the user_id OR the friend_id -->
-<h2>My Confirmed Friends </h2>
-<ul>
-<% @my_friendships.each do |friendship| %>
-  <li><%= friendship.friend.email %> <%= link_to "Un-Friend", friendship_path(friendship), class: "btn btn-sm btn-danger mb-2", :method => :delete %></li>
-<% end %>
-<!-- </ul>
-<h2>People Who Friended Me</h2>
-<ul> -->
-<% @received_friendships.each do |friendship| %>
-  <li><%= friendship.user.email %> <%= link_to "Un-Friend", friendship_path(friendship), class: "btn btn-sm btn-danger mb-2", :method => :delete %></li>
-<% end %>
-</ul>
 
-<h2>All my Friends Combined</h2> 
-<!-- Note that these are friends and inverse_friends, but not friendships -->
-<ul>
-<% @combined_friends.each do |friend| %>
-  <li><%= friend.email %></li>
-<% end %>
-</ul>
-
+<!-- List of all my friends -->
+<div class="row mt-4 mb-4">
+    <div class="col">
+  	    <div class="card text-center">
+	  		<div class="card-header">
+				<h2 class="card-title">All My Friends</h2>
+			</div>
+			<div class="card-body">
+				<ul>
+					<% @combined_friends.sort.each do |friend| %>
+					  <li class="list-unstyled"><%= friend.email %> </li>
+					<% end %>
+				</ul>
+			</div>
+	    </div>
+    </div>
+</div>
